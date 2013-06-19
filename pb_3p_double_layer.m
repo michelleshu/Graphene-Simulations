@@ -1,4 +1,4 @@
-function [ X, P ] = pb_3p_double_layer (P_0, C_0, E_R)
+function [ X, P, R ] = pb_3p_double_layer (P_0, C_0, E_R)
 % PB_3P_DOUBLE_LAYER Simulation of electrical double layer using 
 % Poisson-Boltzmann distribution and 3-point formula. Assumes point charge, 
 % monovalent ions.
@@ -28,7 +28,7 @@ K = 1.3806488e-23;      % Boltzmann constant (J/K)
 T = 293;                % Temperature (K)
 
 % Adjustable Parameters:
-% Set these by passing in as parameters
+% Can set these by passing in as parameters
 % P_0 = 0.025;            % Surface potential [Range: 25 - 200 mV] (V)
 % C_0 = 100;              % Bulk concentration (mol/m^3) -> M * 1e3
 % E_R = 80;               % Relative permittivity (80 for H2O)
@@ -71,7 +71,6 @@ while ~done
     
     % Step 5.
     P = P + (A * (P_calc - P));
-
 end
 
 end

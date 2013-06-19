@@ -1,7 +1,6 @@
 function Qt = dl_charge_distribution
 % DL_CHARGE_DISTRIBUTION Compute double layer charge distribution from
-% second derivative of potential function (R). X represents distance from
-% interface in meters.
+% second derivative of potential function (R).
 
 % Constants
 E_0 = 8.854187817e-12;  % Vacuum permittivity (F/m)  
