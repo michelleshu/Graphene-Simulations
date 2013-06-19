@@ -1,6 +1,7 @@
-function dl_ion_concentration
-% DL_ION_CONCENTRATION Compute ion concentration profile near electrical
+% PB_3P_ION_CONCENTRATION Compute ion concentration profile near electrical
 % double layer according to Boltzmann distribution
+
+% Michelle Shu | June 18, 2013
 
 % Constants
 K = 1.3806488e-23;      % Boltzmann constant (J/K)
@@ -25,5 +26,3 @@ title(['Ion Concentration v. Distance from Interface',...
 xlabel('Distance (m)', 'FontSize', 16);
 ylabel('Concentration (M)', 'FontSize', 16);
 legend('z = +1', 'z = -1');
-
-end

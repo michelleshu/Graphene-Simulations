@@ -1,0 +1,19 @@
+REPOSITORY Graphene-SGFET-Sim
+Michelle Shu | June 2013
+
+Simulation of graphene-electrolyte interface (the electrical double layer)
+
+1. Poisson-Boltzmann and Three Point Formula Method (PB_3P) June 12 - 19
+	The electric potential distribution describing the electrical double layer is simplistically modeled by cross-solving the Poisson-Boltzmann function for second derivative of electric potential and the three-point definition of a general second derivative.
+	
+	The effect of three parameters on electric potential function are modeled:
+	- Bulk ion concentration in solution (pb_3p_bulk_concentration.m)
+	- Applied surface potential (pb_3p_surface_potential.m)
+	- Permittivity of solution (pb_3p_permittivity.m)
+	and figures of the results are located in directory /pb_3p_figures/
+	
+	Two methods are employed to compute the total charge contained within the double layer.
+	- Use Poisson equation with second derivative of potential function to compute charge distribution. Integrate charge distribution (pb_3p_charge_poisson.m)
+	- Use Boltzmann distribution for potential function to compute ion concentration distribution, then convert to charge distribution and integrate (pb_3p_charge_boltzmann.m)
+		* Additional function for second method to graph ion concentration v. distance is pb_3p_ion_concentration.m
+	Figures available in directory /pb_3p_figures/

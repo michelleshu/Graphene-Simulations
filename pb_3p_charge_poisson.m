@@ -1,6 +1,10 @@
-function Qt = dl_charge_distribution
-% DL_CHARGE_DISTRIBUTION Compute double layer charge distribution from
-% second derivative of potential function (R).
+function Qt = pb_3p_charge_poisson
+% PB_3P_CHARGE_POISSON Compute total charge contained in double layer by 
+% integration of charge distribution derived from Poisson equation using 
+% second derivative of potential. Graph relationship between total charge
+% and applied potential.
+
+% Michelle Shu | June 18, 2013
 
 % Constants
 E_0 = 8.854187817e-12;  % Vacuum permittivity (F/m)  
