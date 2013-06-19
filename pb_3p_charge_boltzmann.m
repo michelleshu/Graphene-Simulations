@@ -1,4 +1,4 @@
-function Qt = pb_3p_charge_boltzmann
+function [P_0_options, Qt] = pb_3p_charge_boltzmann
 % PB_3P_CHARGE_BOLTZMANN Compute total charge contained in double layer by 
 % first computing + and - ion concentration distribution in EDL with same 
 % method as PB_3P_ION_CONCENTRATION, then converting to charge distribution
