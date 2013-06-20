@@ -19,7 +19,7 @@ C_0 = 100;              % Bulk concentration (mol/m^3) -> M * 1e3
 Cpos = (C_0 .* (exp((- E / (K * T)) .* P))); % + ion concentration
 Cneg = (C_0 .* (exp((E / (K * T)) .* P)));   % - ion concentration
 
-plot(X, (Cpos ./ 1000), X, (Cneg ./ 1000));
+semilogy(X, (Cpos ./ 1000), X, (Cneg ./ 1000));
 
 title(['Ion Concentration v. Distance from Interface',...
     '(C0 = 0.1 M, P0 = 25 mV, er = 80)'], 'FontSize', 16);

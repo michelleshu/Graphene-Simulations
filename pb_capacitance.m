@@ -4,7 +4,8 @@
 % Capacitance: C = Q / V
 
 [P0, Q] = pb_3p_charge_poisson;
-plot(P0, Q);
+C = Q ./ P0;
+plot(P0, C);
 title(['Capacitance v. Applied Potential (P0)',...
     '(z = 1, C0 = 0.1 M, er = 80)'], 'FontSize', 16);
 xlabel('P0 (V)', 'FontSize', 16);
@@ -23,3 +24,6 @@ title(['Differential Capacitance v. Applied Potential (P0)',...
     '(z = 1, C0 = 0.1 M, er = 80)'], 'FontSize', 16);
 xlabel('P0 (V)', 'FontSize', 16);
 ylabel('Differential Capacitance (F)', 'FontSize', 16);
+
+pause;
+semilogy(P0(1, 2 : end), Cdiff(1, 2 : end));

@@ -31,7 +31,7 @@ T = 293;                % Temperature (K)
 % Can set these by passing in as parameters
 % P_0 = 0.025;            % Surface potential [Range: 25 - 200 mV] (V)
 % C_0 = 100;              % Bulk concentration (mol/m^3) -> M * 1e3
-% E_R = 80;               % Relative permittivity (80 for H2O)
+% E_R = 78.3;               % Relative permittivity (80 for H2O)
 
 H = 1e-10;              % Distance step size, determines resolution (m)
 A = 0.1;                % Potential function adjustment step ratio
@@ -72,6 +72,8 @@ while ~done
     % Step 5.
     P = P + (A * (P_calc - P));
 end
+
+semilogy(X, P);
 
 end
 
