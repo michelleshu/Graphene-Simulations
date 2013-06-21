@@ -30,16 +30,16 @@ T = 293;                % Temperature (K)
 % Can set these by passing in as parameters
 % P_0 = 0.025;           % Surface potential [Range: 25 - 200 mV] (V)
 % C_0 = 100;             % Bulk concentration (mol/m^3) -> M * 1e3
-% E_R = 78.3;               % Relative permittivity (80 for H2O)
+% E_R = 78.3;            % Relative permittivity (80 for H2O)
 
 H = 1e-10;               % Distance step size, determines resolution (m)
-A = 0.001;                % Potential function adjustment step ratio
+A = 1e-10 / (P_0 ^ 3);   % Initial potential function adjustment step ratio
                          %   (controls speed of convergence)
-C = 0.001;                % Convergence criterion: Max acceptable ratio of
+C = 0.001;               % Convergence criterion: Max acceptable ratio of
                          %   (P_calc - P)/ P for an individual point
-L = 2e-8;                  % Limit for P to approach 0
+L = 2e-8;                % Limit for P to approach 0
 G = 1e6;                 % Steepness of initialization curve
-EFF = 1e-9;              % Effective size of ion (overestimate)
+EFF = 1e-10;              % Effective size of ion (overestimate)
 V = 2 * (EFF ^ 3) * C_0;
 
 % Step 1. Initialization
@@ -52,7 +52,7 @@ P_calc(1) = P_0;        % fix at P_0
 done = false;
 
 
-iter = 0;
+iter = 1;
 while ~done 
     % Step 2. Modified Poisson-Boltzmann equation
     for i = 1 : numel(P)
@@ -67,7 +67,7 @@ while ~done
         P_calc(i) = (P(i - 1) + P(i + 1) - R(i) * H^2) / 2;
     end
     max_difference = max(abs(P_calc - P) ./ P);
-    disp(max_difference);
+    %disp(max_difference);
 
     % Step 4. Test for convergence
     if (max_difference) < C
@@ -77,9 +77,10 @@ while ~done
     % Step 5.
     P = P + (A * (P_calc - P));
     
-    if mod(iter, 1000) == 0
-        plot(X, P);
-    %    pause;
+    % Adjust step ratio to larger values gradually until it hits 0.01.
+    % A starts at small value to avoid overshooting in cases with large P_0
+    if (mod(iter, 1e4) == 0) && (A < 0.01)
+            A = A * 10;
     end
     
     iter = iter + 1;

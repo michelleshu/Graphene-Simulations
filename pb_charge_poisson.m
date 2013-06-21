@@ -1,4 +1,4 @@
-function [P_0_options, Qt] = pb_3p_charge_poisson
+function [P_0_options, Qt] = pb_charge_poisson
 % PB_3P_CHARGE_POISSON Compute total charge contained in double layer by 
 % integration of charge distribution derived from Poisson equation using 
 % second derivative of potential. Graph relationship between total charge

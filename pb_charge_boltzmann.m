@@ -1,4 +1,4 @@
-function [P_0_options, Qt] = pb_3p_charge_boltzmann
+function [P_0_options, Qt] = pb_charge_boltzmann
 % PB_3P_CHARGE_BOLTZMANN Compute total charge contained in double layer by 
 % first computing + and - ion concentration distribution in EDL with same 
 % method as PB_3P_ION_CONCENTRATION, then converting to charge distribution
@@ -10,7 +10,7 @@ K = 1.3806488e-23;      % Boltzmann constant (J/K)
 T = 293;                % Temperature (K)
 E = 1.60217657e-19;     % Elementary charge (C)
 N_A = 6.0221413e23;     % Avogadro's number (1/mol)
-A = 1e-9;               % Effective ion size (m) 
+EFF = 1e-10;               % Effective ion size (m) 
 
 % Parameters
 P_0_options = [0.005 : 0.001 : 0.030]; 
@@ -19,7 +19,7 @@ C_0 = 100;              % Bulk concentration (mol/m^3) -> M * 1e3
 E_R = 78.3;
 
 Qt = zeros(size(P_0_options));
-V = (2 * C_0 * N_A) * (A^3);
+V = (2 * C_0 * N_A) * (EFF ^ 3);
 
 
 for i = 1 : numel(P_0_options)

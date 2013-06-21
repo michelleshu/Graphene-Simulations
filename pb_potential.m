@@ -1,4 +1,4 @@
-function [ X, P, R ] = pb_3p_double_layer (P_0, C_0, E_R)
+function [ X, P, R ] = pb_potential (P_0, C_0, E_R)
 % PB_3P_DOUBLE_LAYER Simulation of electrical double layer using 
 % Poisson-Boltzmann distribution and 3-point formula. Assumes point charge, 
 % monovalent ions.
@@ -17,7 +17,7 @@ function [ X, P, R ] = pb_3p_double_layer (P_0, C_0, E_R)
 %       converged, repeat all.
 %   5. Adjust P closer to P_calc by ratio A.
 
-%   Michelle Shu | Last modified on June 17, 2013
+%   Michelle Shu | June 17, 2013
 
 % Constants
 N_A = 6.0221413e23;     % Avogadro's number (1/mol)
@@ -34,11 +34,11 @@ T = 293;                % Temperature (K)
 % E_R = 78.3;               % Relative permittivity (80 for H2O)
 
 H = 1e-10;              % Distance step size, determines resolution (m)
-A = 0.1;                % Potential function adjustment step ratio
-                        %   (controls speed of convergence)
-C = 1e-6;               % Convergence criterion: Max acceptable ratio of
+A = 1e-15 / (P_0 ^ 3);   % Initial potential function adjustment step ratio
+                         %   (controls speed of convergence)
+C = 0.001;               % Convergence criterion: Max acceptable ratio of
                         %   (P_calc - P)/ P for an individual point
-L = 1e-8;               % Limit for P to approach 0
+L = 2e-8;               % Limit for P to approach 0
 G = 1e6;                % Steepness of initialization curve
 
 % Step 1. Initialization
@@ -50,6 +50,7 @@ P_calc = zeros(size(P));
 P_calc(1) = P_0;        % fix at P_0
 done = false;
 
+iter = 1;
 while ~done 
     % Step 2. Poisson-Boltzmann equation
     for i = 1 : numel(P)
@@ -71,9 +72,15 @@ while ~done
     
     % Step 5.
     P = P + (A * (P_calc - P));
+    
+    % Adjust step ratio to larger values gradually until it hits 0.01.
+    % A starts at small value to avoid overshooting in cases with large P_0
+    if (mod(iter, 1e4) == 0) && (A < 0.01)
+            A = A * 10;
+    end
+    
+    iter = iter + 1;
 end
-
-semilogy(X, P);
 
 end
 
