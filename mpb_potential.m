@@ -33,7 +33,7 @@ T = 293;                % Temperature (K)
 % E_R = 78.3;            % Relative permittivity (80 for H2O)
 
 H = 1e-10;               % Distance step size, determines resolution (m)
-A = 1e-12 / (P_0 ^ 3);   % Initial potential function adjustment step ratio
+A = 1e-15 / (P_0 ^ 3);   % Initial potential function adjustment step ratio
                          %   (controls speed of convergence)
 C = 0.001;               % Convergence criterion: Max acceptable ratio of
                          %   (P_calc - P)/ P for an individual point

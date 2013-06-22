@@ -6,25 +6,27 @@ Simulation of graphene-electrolyte interface (the electrical double layer)
 1. Poisson-Boltzmann (PB) Equation for Potential Function
 	The electric potential distribution describing the electrical double layer is simplistically modeled by cross-solving the Poisson-Boltzmann function for second derivative of electric potential and the three-point definition of a general second derivative.
 	
-	Main function for potential: pb_potential.m
+	Function: pb_potential.m
 	
 	The effect of three parameters on electric potential function are modeled in pb_potential_params.m
 	- Bulk ion concentration in solution
 	- Applied surface potential
 	- Permittivity
+	
+	Figures: /pb_params_figures/
 
-2. Modified Poisson-Boltzmann (MPB)
+2. Modified Poisson-Boltzmann (MPB) Equation for Potential Function
 	Same process as (1), but with modification to account for steric effects at larger potentials
+	Function: mpb_potential.m
 	
-	Main potential function : mpb_potential.m
+** Potential distribution data computed and stored in .mat file under /potential_data/
 	
-2. Total EDL Charge over Range of Potentials
+3. Total EDL Charge and Capacitance over Range of Potentials 
+
+	Main script for PB and MPB models in charge_capacitance.m computes charge and capacitance over range of applied potentials P0_values
 	
 	Two methods are employed to compute the total charge contained within the double layer.
-	- Use Poisson equation with second derivative of potential function to compute charge distribution. Integrate charge distribution (pb_charge_poisson.m)
-	- Use Boltzmann distribution for potential function to compute ion concentration distribution, then convert to charge distribution and integrate (pb_charge_boltzmann.m)
-		* Additional function for second method to graph ion concentration v. distance is pb_ion_concentration.m
-		
-	Capacitance function computed from total charge in previous step. Script to plot capacitance and differential capacitance is file pb_capacitance.m
+	- Use Poisson equation with second derivative of potential function to compute charge distribution. Integrate charge distribution (charge_poisson.m)
+	- Use Boltzmann distribution for potential function to compute ion concentration distribution, then convert to charge distribution and integrate (charge_boltzmann.m)
 	
-	Figures of results located in directory /pb_figures/
+	Figures: /mpb_pb_charge_figures/
