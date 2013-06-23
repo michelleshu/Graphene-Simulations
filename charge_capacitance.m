@@ -10,20 +10,21 @@
 % R will be the 100 x 201 matrix holding the respective second derivatives
 % of P.
 
-% This will take a while so just save matrix P and R and do simulation in
+% This will take a while so can save matrix P and R and do simulation in
 % sections.
 
 % Michelle Shu | June 21, 2013
 
 P0_values = (0.01 : 0.01 : 1.00);  % Applied potential in volts
 C_0 = 100;                         % Bulk concentration (mol/m^3)
-E_R = 78.3;                        % Relative permittivity 
-E_0 = 8.854187817e-12;
+E_R = 78.3;                        % Relative permittivity
+EFF = 3e-10;                       % Effective ion size
+E_0 = 8.854187817e-12;           
 
 for index = 1 : 100
      disp(index);
      [pb_X, pb_P(index, :), pb_R(index, :)] = pb_potential(P0_values(index), C_0, E_R);
-     [mpb_X, mpb_P(index, :), mpb_R(index, :)] = mpb_potential(P0_values(index), C_0, E_R);
+     [mpb_X, mpb_P(index, :), mpb_R(index, :)] = mpb_potential(P0_values(index), C_0, E_R, EFF);
 end
 
 % A. Total Charge

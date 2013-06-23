@@ -7,7 +7,7 @@ function [Qt] = charge_poisson (X, R, P0_values)
 % Michelle Shu | June 18, 2013
 
 E_0 = 8.854187817e-12;  % Vacuum permittivity (F/m)  
-E_R = 79.3;             % Relative permittivity (80 for H2O)
+E_R = 78.3;             % Relative permittivity (80 for H2O)
 
 Qt = zeros(size(P0_values));
 

@@ -8,7 +8,7 @@
 
 C_0_options = [0.1, 1, 10, 100, 1000]; % in mol/m^3
 P_0 = 0.025;
-E_R = 80;
+E_R = 78.3;
 
 [X1, P1, ~] = pb_potential(P_0, C_0_options(1), E_R);
 [X2, P2, ~] = pb_potential(P_0, C_0_options(2), E_R);
