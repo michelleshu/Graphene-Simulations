@@ -33,4 +33,12 @@ Simulation of graphene-electrolyte interface (the electrical double layer)
 	Figures: /mpb_pb_charge_figures/
 	
 4. MPB Charge and Capacitance Parameters
-	Script mpb_charge_cap_params
+	Script: mpb_charge_cap_params.m 
+
+	Graph total charge, capacitance, differential capacitance over range of applied potentials, while varying:
+	- Bulk ion concentration
+	- Relative Permittivity
+	- Effective ion size
+	- Valence
+	
+	Figures: /mpb_params_figures/
