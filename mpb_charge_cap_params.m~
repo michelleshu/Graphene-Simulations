@@ -1,9 +1,0 @@
-% MPB_CHARGE_CAP_PARAMS.M
-% Compute functions for charge and capacitance due to Modified Poisson
-% Boltzmann model while varying the following parameters: 
-% bulk concentration (0.01 - 0.3 M), relative permittivity (30 - 120),
-% effective ion size (0.1 - 5 nm)
-
-% Michelle Shu | June 23, 2013
-
-P0_values = (0.01 : 0.05 : 1.01);
