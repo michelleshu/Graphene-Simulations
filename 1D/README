@@ -1,0 +1,31 @@
+EDLSim - 1-Dimensional Version
+Michelle Shu | June 2013
+
+Simulation of graphene-electrolyte interface (the electrical double layer)
+
+1. Poisson-Boltzmann (PB) Equation for Potential Function (potential_1d.m)
+	The electric potential distribution describing the electrical double layer
+is modeled by cross-solving the Poisson-Boltzmann function for second 
+derivative of electric potential and the three-point definition of a general
+second derivative. The potential function is the basis for all subsequent
+computations.
+	
+2. Potential and Ion Distribution v. Distance from Interface
+	If all ions are of same valence, the distribution of positive and negative 
+charges with respect to distance from the interface can be modeled by the
+Boltzmann distribution.
+	
+	We examine the effects of bulk concentration, relative permittivity,  
+effective ion size and valence on the functions of potential and ion
+distribution in calc_potential_conc.m and graph_potential_conc.m
+	
+3. Total EDL Charge and Capacitance v. Applied Potential 
+	Total charge in the EDL is obtained from second derivative of potential
+function and the Poisson equation. The electrical potential distribution and
+charge is computed for a range of applied potential values. Capacitance and
+differential capacitance are computed from the function charge v.
+applied potential.
+
+	We examine effects of bulk concentration, relative permittivity, 
+effective ion size and valence on charge and capacitance over a range of applied
+potentials in calc_charge_cap.m and graph_charge_cap.m.
