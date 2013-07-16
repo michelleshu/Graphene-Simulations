@@ -11,10 +11,10 @@ const double N_A  = 6.0221413e23;		// Avogadro's number (1/mol)
 /* ----- MODEL PARAMETERS -------------------------------------------------- */
 
 // Dimensions of simulation grid and neuron (sensor height = grid height) in m
-const float GRID_WIDTH		= 1.1e-6;     
-const float GRID_HEIGHT    	= 1.1e-6;     
-const float NEURON_WIDTH	= 1e-6; 
-const float NEURON_HEIGHT	= 1e-6;
+const float GRID_WIDTH		= 1.1e-7;     
+const float GRID_HEIGHT    	= 1.1e-7;     
+const float NEURON_WIDTH	= 1e-7; 
+const float NEURON_HEIGHT	= 1e-7;
 const float NEURON_DISP		= 1e-8;		// Displacement from interface
 const float MEM_THICKNESS	= 1e-8;		// Thickness of cell membrane
 const float H   			= 1e-9;	    // Size of grid square (resolution)
