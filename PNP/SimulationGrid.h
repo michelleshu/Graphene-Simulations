@@ -14,7 +14,7 @@ typedef struct simulation Simulation;
 struct simulation {
 	int M;				// Number of rows
 	int N;				// Number of columns
-	int H;				// Grid size
+	float H;			// Grid size
 	double* ni_na;		// Ion density
 	double* ni_k;
 	double* ni_cl;

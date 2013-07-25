@@ -26,7 +26,7 @@ const float H    = 1e-10;               // Distance step size, determines resolu
 
 const float A	 = 0.1;                 // Potential adjustment ratio
                          	  			// (controls speed of convergence)
-const float CONV = 1e-4;             	// Max acceptable error ratio for an individual point for convergence
+const float CONV = 1e-6;             	// Max acceptable error ratio for an individual point for convergence
 const float G	 = 1e6;                 // Steepness of initialization curve
 
 /* ----- PUBLIC FUNCTION PROTOTYPE ----------------------------------------- */

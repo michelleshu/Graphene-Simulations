@@ -36,24 +36,24 @@ double get(double *A, int row, int col, int M, int N) {
  * with a height M */
 double get_left(double *A, int row, int col, int M, int N) {
 	if (col <= 0) {
-		/* No horizontal wrapping */
-		return 0.0;
+		/* No wrap, return itself */
+		return get(A, row, col, M, N);
 	}
 	return get(A, row, col - 1, M, N);
 }
 
 double get_right(double *A, int row, int col, int M, int N) {
 	if (col >= N - 1) {
-		/* No horizontal wrapping */
-		return 0.0;
+		/* No wrap, return itself */
+		return get(A, row, col, M, N);
 	}
 	return get(A, row, col + 1, M, N);
 }
 
 double get_top(double *A, int row, int col, int M, int N) {
 	if (row <= 0) {
-		/* Wrap vertically */
-		return get(A, M - 1, col, M, N);
+		/* No wrap, return itself */
+		return get(A, row, col, M, N);
 	} else {
 		return get(A, row - 1, col, M, N);
 	}
@@ -61,8 +61,8 @@ double get_top(double *A, int row, int col, int M, int N) {
 	
 double get_bottom(double *A, int row, int col, int M, int N) {
 	if (row >= M - 1) {
-		/* Wrap vertically */
-		return get(A, 0, col, M, N);
+		/* No wrap, return itself */
+		return get(A, row, col, M, N);
 	} else {
 		return get(A, row + 1, col, M, N);
 	}

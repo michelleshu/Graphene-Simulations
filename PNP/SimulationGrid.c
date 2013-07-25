@@ -10,14 +10,50 @@ const double N_A  = 6.0221413e23;		// Avogadro's number (1/mol)
 
 /* ----- MODEL PARAMETERS -------------------------------------------------- */
 
+/*// TOY CASE
+const float GRID_WIDTH		= 10;     
+const float GRID_HEIGHT    	= 10;     
+const float NEURON_WIDTH	= 6; 
+const float NEURON_HEIGHT	= 6;
+const float NEURON_DISP		= 2;		// Displacement from interface
+const float MEM_THICKNESS	= 1;		// Thickness of cell membrane
+const float H   			= 1;	    // Size of grid square (resolution)
+
+// Applied Potential in V
+const double P_0			= 0.025;
+
+// Ion Concentrations in mol/m^3
+const float IC_CONC_NA		= 18;		// Intracellular
+const float IC_CONC_K		= 135;
+const float IC_CONC_CL		= 7;
+const float IC_CONC_A		= 74;		// A- is generic organic anion
+const float EC_CONC_NA		= 145;		// Extracellular
+const float EC_CONC_K		= 3;
+const float EC_CONC_CL		= 20;
+const float EC_CONC_A		= 13;
+
+// Diffusion Constants in m^2/s
+const float D_NA			= 1;
+const float D_K				= 1;
+const float D_CL			= 1;
+const float D_A				= 1;  // (Glutamate)
+
+const float REST_MEM_D_NA	= 1e-6;  // D in membrane during resting state
+const float REST_MEM_D_K	= 1;
+const float REST_MEM_D_CL	= 1;
+const float REST_MEM_D_A	= 1;*/
+
 // Dimensions of simulation grid and neuron (sensor height = grid height) in m
-const float GRID_WIDTH		= 1.1e-7;     
-const float GRID_HEIGHT    	= 1.1e-7;     
-const float NEURON_WIDTH	= 1e-7; 
-const float NEURON_HEIGHT	= 1e-7;
-const float NEURON_DISP		= 1e-8;		// Displacement from interface
+const float GRID_WIDTH		= 1.1e-6;     
+const float GRID_HEIGHT    	= 1.1e-6;     
+const float NEURON_WIDTH	= 1e-6; 
+const float NEURON_HEIGHT	= 1e-6;
+const float NEURON_DISP		= 4e-8;		// Displacement from interface
 const float MEM_THICKNESS	= 1e-8;		// Thickness of cell membrane
-const float H   			= 1e-9;	    // Size of grid square (resolution)
+const float H   			= 1e-8;	    // Size of grid square (resolution)
+
+// Applied Potential in V
+const double P_0			= 0.2;
 
 // Ion Concentrations in mol/m^3
 const float IC_CONC_NA		= 18;		// Intracellular
@@ -38,7 +74,7 @@ const float D_A				= 0.76e-9;  // (Glutamate)
 const float REST_MEM_D_NA	= 0.04e-9;  // D in membrane during resting state
 const float REST_MEM_D_K	= 1.00e-9;
 const float REST_MEM_D_CL	= 0.45e-9;
-const float REST_MEM_D_A	= 0.38e-9;
+const float REST_MEM_D_A	= 0.10e-9;
 
 /* ----- PRIVATE FUNCTION PROTOTYPES --------------------------------------- */
 
@@ -156,6 +192,22 @@ static void simulation_initialize(Simulation* sim) {
 			set_intracellular(sim, get_index(row, col, sim -> M));	
 		}	
 	}
+	
+	// Set potential
+	for (int col = 0; col < sim -> N; col++) {
+		for (int row = 0; row < sim -> M; row++) {
+			sim -> p[get_index(row, col, sim -> M)] = (- P_0 / (GRID_WIDTH - H))
+				* (col * H) + P_0;
+		}
+	}
+	
+	// Set concentration boundary condition at interface
+	for (int row = 0; row < sim -> M; row++) {
+		sim -> ni_na[get_index(row, 0, sim -> M)] = 0.0;
+		sim -> ni_k[get_index(row, 0, sim -> M)] = 0.0;
+		sim -> ni_cl[get_index(row, 0, sim -> M)] = 0.0;
+		sim -> ni_a[get_index(row, 0, sim -> M)] = 0.0;
+	}
 }
 
 /* Set cell at index i in simulation grid to extracellular conditions */
@@ -173,10 +225,10 @@ static void set_extracellular(Simulation* sim, int i) {
 
 /* Set cell at index i in simulation grid to membrane conditions */
 static void set_membrane(Simulation* sim, int i) {
-	sim -> ni_na[i] = 0.0; // Assume no ions in membrane to start
-	sim -> ni_k[i] = 0.0;
-	sim -> ni_cl[i] = 0.0;
-	sim -> ni_a[i] = 0.0;
+	sim -> ni_na[i] = IC_CONC_NA * N_A * H * H; // Assume same ion concentration as inside cell
+	sim -> ni_k[i] = IC_CONC_K * N_A * H * H;
+	sim -> ni_cl[i] = IC_CONC_CL * N_A * H * H;
+	sim -> ni_a[i] = IC_CONC_A * N_A * H * H;
 	
 	sim -> d_na[i] = REST_MEM_D_NA;
 	sim -> d_k[i] = REST_MEM_D_K;
