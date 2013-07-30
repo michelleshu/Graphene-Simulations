@@ -1,0 +1,31 @@
+EDLSIM - Simulations of EDL at graphene SGFET-electrolyte interface
+Michelle Shu | Summer 2013
+
+Main content is located in directory /2D. The more basic, older 1D simulation
+is found in /1D and has its own README.
+
+* MEX * ________________________________________________________________________
+For much improved time efficiency, the bulk of this program is implemented in
+the C language and integrated with Matlab as a MEX (Matlab Executable) file.
+There is also a Matlab version (potential_2d.c), but don't use this, because it
+is very slow. The MEX file must first be compiled on each machine on which it
+is run. To do this manually, use the Matlab command:
+
+>> mex potential.c
+
+This should generate a file named potential.mex*, where * is particular to the
+OS and processor. The resulting program can then be run by its name in the
+command line just like a normal Matlab function.
+
+>> [X, Y, P, R] = potential(P0, E_R, EFF_SIZE, )
+
+
+* FUNCTION INPUTS AND OUTPUTS * ________________________________________________
+
+
+
+---
+If you are on a Mac and have problems graphing surface plots using Matlab's
+surf, it is possibly an OpenGL issue. Try the command:
+
+>> opengl neverselect

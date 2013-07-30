@@ -1,9 +1,9 @@
-% GVOLTAGE2 Find function of potential along graphene surface using
+% GVOLTAGE Find function of potential along graphene surface using
 % MATLAB's fsolve function
 % Michelle Shu | July 24, 2013
 
-H = 2e-9;
-L = 2e-5;
+H = 5e-9;
+L = 3e-5;
 
 % PART 2: Compute potential function
 V_0 = 0.1;               % Applied potential

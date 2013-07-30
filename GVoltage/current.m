@@ -7,7 +7,7 @@ MOB = 0.055;        % m^2 / s
 W = 5e-6;           % Channel width
 
 K = 1e-3;           % Grid size along V
-V_values = (0 : K : VGS_TOP); 
+V_values = (0 : -K : VGS_TOP); 
 
 F1 = (C_top(V_values) .* (VGS_TOP - V_values) / Q) .^ 2;
 F2 = sqrt((N_0^2) + F1);

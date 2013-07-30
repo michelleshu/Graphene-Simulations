@@ -21,29 +21,34 @@ const float  T    = 293;				// Temperature (K)
 /* ----- MODEL PARAMETERS -------------------------------------------------- */
 
 const float D    = 2e-8;                // Limit for P to approach 0 
-const float L    = 1e-8;                // Length of interface
-const float H    = 1e-10;               // Distance step size, determines resolution (m)
+const float L    = 3e-5;                // Length of sensor
+const float H_X  = 1e-10;               // Distance step size away from sensor
+const float H_Y  = 5e-9;				// Distance step size along sensor
 
 const float A	 = 0.1;                 // Potential adjustment ratio
                          	  			// (controls speed of convergence)
-const float CONV = 1e-6;             	// Max acceptable error ratio for an individual point for convergence
+const float CONV = 1e-6;             	// Max acceptable error ratio for 
+										// individual point for convergence
 const float G	 = 1e6;                 // Steepness of initialization curve
 
 /* ----- PUBLIC FUNCTION PROTOTYPE ----------------------------------------- */
 
-void potential(int M, int N, double P_0, double E_R, double EFF, 
+void potential(int M, int N, double *P_0, double E_R, double EFF, 
 			   double ion_types, double *Zi, double *Ci, double MPB, 
 			   double *X, double *Y, double *P, double *R);
 
 /* ----- PRIVATE FUNCTION PROTOTYPES --------------------------------------- */
 
 static void initializeGrid(double *X, double *Y, int M, int N, double *P, 
-						   double P_0);
+						   double *P_0);
 static void computePBDerivs(int M, int N, double *P, double *Zi, double *Ci, 
 						   	double ion_types, double E_R, double EFF,
 							double MPB, double *R);	
 static double updatePotentials(int M, int N, double *P, double *R);
-static double getNeighborSum(int row, int col, int M, int N, double *P);
+static double getLeft(int row, int col, int M, int N, double *P);
+static double getRight(int row, int col, int M, int N, double *P);
+static double getUpper(int row, int col, int M, int N, double *P);
+static double getLower(int row, int col, int M, int N, double *P);
 static int getIndex(int row, int col, int M);
 	
 /* ----- FUNCTIONS --------------------------------------------------------- */
@@ -63,14 +68,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		}
 	}
 	
-	int M = (int) (L / H);				// Number of rows
-	int N = (int) (D / H) + 1;			// Number of columns
+	int M = (int) (L / H_Y) + 1;				// Number of rows
+	int N = (int) (D / H_X) + 1;				// Number of columns
 	
-	double P_0, E_R, EFF, MPB, ion_types;
+	double *P_0, E_R, EFF, MPB, ion_types;
 	double *Zi, *Ci, *X, *Y, *P, *R;
 	
 	/* Parse input arguments */
-	P_0 = mxGetScalar(prhs[0]);
+	P_0 = mxGetPr(prhs[0]);
 	E_R = mxGetScalar(prhs[1]);
 	EFF = mxGetScalar(prhs[2]);
 	ion_types = mxGetScalar(prhs[3]);
@@ -92,42 +97,44 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	potential(M, N, P_0, E_R, EFF, ion_types, Zi, Ci, MPB, X, Y, P, R);
 }
 
-void potential(int M, int N, double P_0, double E_R, double EFF, 
+void potential(int M, int N, double *P_0, double E_R, double EFF, 
 			   double ion_types, double *Zi, double *Ci, double MPB, 
 			   double *X, double *Y, double *P, double *R) {
 	
 	initializeGrid(X, Y, M, N, P, P_0);
-	
+
 	double max_error = CONV + 1;
+	int iter = 0;
 	while (max_error > CONV) {
 		computePBDerivs(M, N, P, Zi, Ci, ion_types, E_R, EFF, MPB, R);
 		max_error = updatePotentials(M, N, P, R);
+		iter++;
 	}
+	mexPrintf("Error: %e \t Iterations: %e \n", max_error, iter);
 }
 
 
 static void initializeGrid(double *X, double *Y, int M, int N, double *P, 
-						   double P_0) {	
+						   double *P_0) {	
 	
 	double axis_val = 0.0;
 	for (int i = 0; i < N; i++) {
 		X[i] = axis_val;
-		axis_val += H;
+		axis_val += H_X;
 	}
 	
 	axis_val = 0.0;
 	for (int i = 0; i < M; i++) {
 		Y[i] = axis_val;
-		axis_val += H;
+		axis_val += H_Y;
 	}
 	
-	for (int col = 0; col < N; col++) {
-		double potential = (- P_0 / D * X[col]) + P_0;
-		// double potential = (P_0 / (1 - exp(-G * D))) * 
-		//				   (exp(-G * X[col]) - exp(-G * D));
-		for (int row = 0; row < M; row++) {
-			P[getIndex(row, col, M)] = potential;
+	for (int row = 0; row < M; row++) {
+		double p_high = P_0[row];
+		for (int col = 0; col < N - 1; col++) {
+			P[getIndex(row, col, M)] = (- p_high / D * X[col]) + p_high;
 		}
+		P[getIndex(row, N - 1, M)] = 0.0; // make sure last column set to 0
 	}
 }
 
@@ -164,9 +171,17 @@ static double updatePotentials(int M, int N, double *P, double *R) {
 	double max_error = 0;
 	for (int row = 0; row < M; row++) {
 		for (int col = 1; col < N - 1; col++) {	// Fix first and last points
+			
 			int i = getIndex(row, col, M);
-			double new_p = (getNeighborSum(row, col, M, N, P) - 
-						   (R[i] * H * H)) / 4;
+			double horz_sum = getLeft(row, col, M, N, P) + 
+				getRight(row, col, M, N, P);
+			double vert_sum = getUpper(row, col, M, N, P) +
+				getLower(row, col, M, N, P);
+			
+			double new_p = ((H_Y * H_Y * horz_sum) + (H_X * H_X * vert_sum) - 
+				(H_X * H_X * H_Y * H_Y * R[i])) / 
+				((2 * H_X * H_X) + (2 * H_Y * H_Y));
+
 			// Evaluate error
 			double error = fabs(new_p - P[i]) / P[i];
 			if (error > max_error) {
@@ -181,40 +196,46 @@ static double updatePotentials(int M, int N, double *P, double *R) {
 	return max_error;
 }
 
-/** Get the sum of the potentials of all immediate neighboring locations */
-static double getNeighborSum(int row, int col, int M, int N, double *P) {
+/** Get value of grid cell to the left of (row, col) */
+static double getLeft(int row, int col, int M, int N, double *P) {
 	
-	double neighbor_sum = 0.0;
-	
-	// Left neighbor
 	if (col > 0) {
-		neighbor_sum += P[getIndex(row, col - 1, M)];
+		return P[getIndex(row, col - 1, M)];
 	} else {
-		neighbor_sum += P[getIndex(row, N - 1, M)];
+		/* If no left neighbor, use this square's value */
+		return P[getIndex(row, col, M)];
 	}
+}
+
+static double getRight(int row, int col, int M, int N, double *P) {
 	
-	// Right neighbor
 	if (col < N - 1) {
-		neighbor_sum += P[getIndex(row, col + 1, M)];
+		return P[getIndex(row, col + 1, M)];
 	} else {
-		neighbor_sum += P[getIndex(row, 0, M)];
+		/* If no right neighbor, use this square's value */
+		return P[getIndex(row, col, M)];
 	}
+}
 	
-	// Top neighbor
+/** Get value of grid cell above this (row, col) */
+static double getUpper(int row, int col, int M, int N, double *P) {
+	
 	if (row > 0) {
-		neighbor_sum += P[getIndex(row - 1, col, M)];
+		return P[getIndex(row - 1, col, M)];
 	} else {
-		neighbor_sum += P[getIndex(M - 1, col, M)];
+		/* If no upper neighbor, use this square's value */
+		return P[getIndex(row, col, M)];
 	}
+}
+
+static double getLower(int row, int col, int M, int N, double *P) {
 	
-	// Bottom neighbor
 	if (row < M - 1) {
-		neighbor_sum += P[getIndex(row + 1, col, M)];
+		return P[getIndex(row + 1, col, M)];
 	} else {
-		neighbor_sum += P[getIndex(0, col, M)];
+		/* If no upper neighbor, use this square's value */
+		return P[getIndex(row, col, M)];
 	}
-	
-	return neighbor_sum;
 }
 
 static int getIndex(int row, int col, int M) {
