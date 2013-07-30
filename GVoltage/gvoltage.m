@@ -2,14 +2,19 @@
 % MATLAB's fsolve function
 % Michelle Shu | July 24, 2013
 
-H = 5e-9;
-L = 3e-5;
+function [V, fval, X] = gvoltage(W, L, V_0, VGS_TOP)
 
-% PART 2: Compute potential function
-V_0 = 0.1;               % Applied potential
-X = (0 : H : L);
-V_init = (V_0 / L) .* X; % Initial guess for V
+    I = current(W, L, VGS_TOP);
+    H = 5e-9;           % Resolution (grid size along channel length)
 
-options = optimoptions('fsolve', 'Algorithm', 'levenberg-marquardt', ...
-    'Display', 'iter', 'TolFun', 1e-6, 'TolX', 1e-6);
-[V, fval] = fsolve(@V_functions, V_init, options);    
+    % Compute potential function
+    X = (0 : H : L);
+    V_init = (V_0 / L) .* X; % Initial guess for V
+
+    f = @(V)V_functions(V, I, W, H, V_0, VGS_TOP);
+
+    options = optimoptions('fsolve', 'Algorithm', 'levenberg-marquardt', ...
+        'Display', 'iter', 'TolFun', 1e-6, 'TolX', 1e-6);
+    [V, fval] = fsolve(f, V_init, options);
+
+end

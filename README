@@ -4,6 +4,7 @@ Michelle Shu | Summer 2013
 Main content is located in directory /2D. The more basic, older 1D simulation
 is found in /1D and has its own README.
 
+
 * MEX * ________________________________________________________________________
 For much improved time efficiency, the bulk of this program is implemented in
 the C language and integrated with Matlab as a MEX (Matlab Executable) file.
@@ -11,21 +12,73 @@ There is also a Matlab version (potential_2d.c), but don't use this, because it
 is very slow. The MEX file must first be compiled on each machine on which it
 is run. To do this manually, use the Matlab command:
 
->> mex potential.c
+>> mex potential.c;
 
 This should generate a file named potential.mex*, where * is particular to the
 OS and processor. The resulting program can then be run by its name in the
 command line just like a normal Matlab function.
 
->> [X, Y, P, R] = potential(P0, E_R, EFF_SIZE, )
+>> [X, Y, P, R] = potential(P0, E_R, EFF, ion_types, Zi, Ci, MPB);
+
+Adjustments other parameters in the algorithm can be made in potential.c
+
 
 
 * FUNCTION INPUTS AND OUTPUTS * ________________________________________________
+Input Parameters:
+	- P0: Array of potential values along graphene channel (see GVOLTAGE below)
+	- E_R: Relative permittivity
+	- EFF: Effective ion size (m)
+	- ion_types: Number of ion types
+	- Zi: Array of size(ion_types) of ion valences
+	- Ci: Array of size(ion_types) of ion concentrations (corresponds to Zi)
+	
+Outputs:
+	- X: X-axis values (increasing X = increasing distance away from graphene)
+	- Y: Y-axis values (increasing Y = increasing distance along graphene)
+	- P: Electric potential values at each X and Y location on grid
+	- R: Second derivatives (grad^2) of potential values
+	
+- Plot potential grid as a 3-D surface plot with the command:
 
-
-
+>> surf(X, Y, P);
 ---
 If you are on a Mac and have problems graphing surface plots using Matlab's
-surf, it is possibly an OpenGL issue. Try the command:
+surf, it is possibly an OpenGL issue. To disable OpenGL for this session, try
+the command:
 
->> opengl neverselect
+>> opengl neverselect;
+
+
+
+* GVOLTAGE * ___________________________________________________________________
+To compute potential values along graphene channel from source to drain, use functions in directory /GVoltage
+
+* C_top is the function for fitted curve for C vs. V0 derived from MPB
+	simulation. Right now it has the equation for the curve resulting from the
+	following parameters: one type of ion, e_r: 78.3, ion size: 3 nm, z = 1,
+	bulk concentration = 0.1 M
+
+* To calculate V, use gvoltage as so:
+
+>> [V, fval, X] = gvoltage(W, L, V_0, VGS_TOP)
+
+	where the parameters stand for: W = channel width, L = channel height, 
+	V_0 = applied potential, VGS_TOP = gate-source voltage.
+
+* By default, this generates function V along graphene channel with resolution
+	of 5 nm spacing between points. Further adjustments can be made to the 
+	settings in gvoltage.v
+
+* Current is a helper function that computes channel current by integration.
+	It is built in to gvoltage, but can also be used alone.
+
+
+
+* DATA GENERATED * _____________________________________________________________
+
+Results from a run of this simulation are saved as /2D/data.mat
+These are the parameters used to generate the results:
+	- Graphene Channel: 30 um long 
+	- Resolution: Grid points spaced every 5 nm along graphene, every 0.1 nm
+		away from graphene

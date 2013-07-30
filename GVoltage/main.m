@@ -1,11 +1,10 @@
-% NOTES: Fill in later to specify full routine
+I = -3.6282086e-04; % Current (A)
 
-% Compute Vdrift
-% Curve fit V0 and compute the derivative by hand to get E (electric field)
-E = - (1135.8 * exp(55270 * X_5nm) + 813.28 * exp(-39270 * X_5nm));
-Vdrift = 0.055 .* E;    % mobility * E
-Vdrift_cm = Vdrift * 100;
-plot(X_5nm .* 100, Vdrift_cm);
+W = 5e-6;           % Channel width (m)
+L = 1e-5;           % Channel length (m)
+H = 5e-8;           % Resolution (grid size along channel length
 
-% Compute n0
+V_0 = 0.1;          % Applied potential
+VGS_TOP = 0.4;      % Volts
 
+[V, fval, X] = gvoltage(I, W, L, H, V_0, VGS_TOP);
