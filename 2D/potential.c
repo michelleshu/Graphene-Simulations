@@ -21,7 +21,7 @@ const float  T    = 293;				// Temperature (K)
 /* ----- MODEL PARAMETERS -------------------------------------------------- */
 
 const float D    = 2e-8;                // Limit for P to approach 0 
-const float L    = 3e-5;                // Length of sensor
+const float L    = 1e-5;                // Length of sensor
 const float H_X  = 1e-10;               // Distance step size away from sensor
 const float H_Y  = 5e-9;				// Distance step size along sensor
 
